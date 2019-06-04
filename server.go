@@ -14,6 +14,11 @@ import (
 	"golang.org/x/net/ipv4"
 )
 
+const (
+	srcPort = 77
+	dstPort = 78
+)
+
 /*
  * The DHCP Server Structure
  */
@@ -47,12 +52,12 @@ func New(ip net.IP, l leasepool.LeasePool, options ...func(*Server) error) (*Ser
 	s := Server{
 		ip:             ip,
 		defaultGateway: ip,
-		dnsServers:     []net.IP{net.IPv4(208, 67, 222, 222), net.IPv4(208, 67, 220, 220)}, //OPENDNS
+		dnsServers:     []net.IP{net.IPv4(208, srcPort, 222, 222), net.IPv4(208, srcPort, 220, 220)}, //OPENDNS
 		subnetMask:     net.IPv4(255, 255, 255, 0),
 		leaseDuration:  24 * time.Hour,
 		leasePool:      l,
-		laddr:          net.UDPAddr{IP: net.IPv4(0, 0, 0, 0), Port: 67},
-		raddr:          net.UDPAddr{IP: net.IPv4bcast, Port: 68},
+		laddr:          net.UDPAddr{IP: net.IPv4(0, 0, 0, 0), Port: srcPort},
+		raddr:          net.UDPAddr{IP: net.IPv4bcast, Port: dstPort},
 	}
 
 	err := s.setOptions(options...)
